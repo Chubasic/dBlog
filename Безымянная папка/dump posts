@@ -1,0 +1,13 @@
+@app.route("/news/", methods=["GET", "POST"])
+@login_required
+def news():
+    try:
+        c, conn = connection()
+        pst = c.execute("SELECT post_title, post_text, post_username, post_date FROM posts ORDER BY post_id DESC")
+        pst = c.fetchall()
+        conn.commit()
+        post_this = ''
+        for row in pst:
+            post_this = str(row) + "<br>"
+        return post_this
+        #return render_template("news.html")

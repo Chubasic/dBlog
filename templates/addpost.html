@@ -7,9 +7,9 @@
         <h4>Add post</h4>
         <br>
         {% from "_formhelpers.html" import render_field %}
-        <form method=post action="/add_post/">
+        <form method=post action="/addpost/">
             <dl>
-                {{render_field(form.title)}}
+                {{render_field(form.post_title)}}
                 {{render_field(form.post_text)}}
             </dl>
             <p><input type=submit value=Submit></p>
