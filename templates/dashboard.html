@@ -1,0 +1,44 @@
+{% extends "header.html" %}
+
+{% block body %}
+
+<div>
+
+  <!-- Nav tabs -->
+  <ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active"><a href="#ABOUT" aria-controls="ABOUT" role="tab" data-toggle="tab">ABOUT</a></li>
+    <li role="presentation"><a href="#CONTACT" aria-controls="CONTACT" role="tab" data-toggle="tab">CONTACT</a></li>
+    <li role="presentation"><a href="#NEWS" aria-controls="NEWS" role="tab" data-toggle="tab">NEWS</a></li>
+  </ul>
+
+  <!-- Tab panes -->
+<div class="tab-content">
+  <div role="tabpanel" class="tab-pane fade in active" id="ABOUT">Basic stuff here</div>
+
+
+  
+  
+  
+  
+  <div role="tabpanel" class="tab-pane fade" id="CONTACT">
+  <ul>
+  	<li>Number: 380935159530</li>
+  	<li>Email: Orestjoe@gmail.com</li>
+  	{% for t in DICT["CONTACT"] %}
+  		<li><a href="{{t[1]}}">{{t[0]}}</a></li>
+  	{% endfor %}	
+  </ul>
+  </div>
+  
+
+
+
+
+  
+  <div role="tabpanel" class="tab-pane fade" id="NEWS"> Whut?? </div>
+  
+</div>
+
+</div>
+
+{% endblock %}
