@@ -8,6 +8,8 @@ from content_m import Content
 from dbconnect import connection
 from functools import wraps
 import datetime
+import json
+
 
 
 DICT = Content()
@@ -137,24 +139,24 @@ def register_page():
 
 
 class ArticleForm(Form):
-    title = TextField('title', validators=[DataRequired()])
+    post_title = TextField('post_title', validators=[DataRequired()])
     post_text = TextAreaField('post_text', validators=[DataRequired()])
 
-
-@app.route('/add_post/', methods=['POST', 'GET'])
+@app.route('/addpost/', methods=['POST', 'GET'])
 @login_required
 def add_post():
     try:
         form = ArticleForm(request.form)
         dt = datetime.date.today()
-        post_time = dt.strftime("%d/%m/%y")
+        post_date = dt.strftime("%d/%m/%y")
         if request.method == "POST" and form.validate():
-            if form.title.data and form.post_text.data:
+
+            if form.post_title.data and form.post_text.data:
                 c, conn = connection()
-                sql = c.execute("insert into posts (title, post_text, post_time, post_username) values(%s, %s, %s, %s)",
-                    (form.title.data, form.post_text.data, post_time, session.get('username')))
+                post = c.execute("INSERT INTO posts (post_title, post_text, post_date, post_username)" "values(%s, %s, %s, %s)",
+                (form.post_title.data, form.post_text.data, post_date, session.get('username')))
                 conn.commit()
-                flash('New article is created.')
+                flash('New post is created.')
                 c.close()
                 conn.close()
                 gc.collect()
@@ -164,37 +166,41 @@ def add_post():
                 return redirect(url_for('news'))
             else:
                 flash('Title and text should not be empty.')
-            return render_template('add_post.html', username=session['username'], form=form)
-        return render_template("add_post.html", form=form)
+                return render_template('addpost.html', username=session['username'], form=form)
+        return render_template("addpost.html", form=form)
 
     except Exception as e:
         return str(e)
         flash('You were not logged in. Please sign in first.')
 
 
-@app.route("/news/", methods=["GET", "POST"])
+@app.route('/news/', methods=["GET", "POST"])
 @login_required
 def news():
     try:
-        c, conn = connection()
-        pst = c.execute("SELECT title, post_text, post_time FROM posts ORDER BY post_id DESC")
-        pst = c.fetchall()
-        conn.commit()
-        post_this = ("",)
-        for i in pst:
-            post_this = i + "<br>"
-        return post_this
-        return render_template("news.html")
+        if session.get('username'):
+            c, conn = connection()
+            posts = c.execute("SELECT post_title, post_text, post_username, post_date FROM posts ORDER BY post_id DESC")
+            posts = c.fetchall()
+            posts_dict = []
+            for post in posts:
+                post_dict = {
+                    'post_title': post[0],
+                    'post_text': post[1],
+                    'post_username': post[2],
+                    'post_date': post[3]
+                             }
+                posts_dict.append(post_dict)
+            return render_template('news.html', posts_dict=posts_dict)
+
     except Exception as e:
         return str(e)
-""""I failed on this place at 5:36
-        cannot concatenate 'str' and 'tuple' objects"""
+
 
 @app.route("/music/", methods=["GET"])
 @login_required
 def music():
     return render_template("music.html")
-
 
 
 if __name__ == "__main__":
