@@ -11,6 +11,7 @@ import datetime
 import json
 
 
+
 DICT = Content()
 
 app = Flask(__name__)
@@ -173,24 +174,28 @@ def add_post():
         flash('You were not logged in. Please sign in first.')
 
 
-@app.route("/news/", methods=["GET", "POST"])
+@app.route('/news/', methods=["GET", "POST"])
 @login_required
 def news():
     try:
-        c, conn = connection()
-        posts = c.execute("SELECT post_title, post_text, post_username FROM posts ORDER BY post_id DESC")
-        posts = c.fetchall()
-        posts_dict = []
-        for post in posts:
-            post_dict = {'post_title': post[0],
-                         'post_text': post[1],
-                         'post_username': post[2]}
-            posts_dict.append(post_dict)
-        return json.dumps(posts_dict)
+        if session.get('username'):
+            c, conn = connection()
+            posts = c.execute("SELECT post_title, post_text, post_username, post_date FROM posts ORDER BY post_id DESC")
+            posts = c.fetchall()
+            posts_dict = []
+            for post in posts:
+                post_dict = {
+                    'post_title': post[0],
+                    'post_text': post[1],
+                    'post_username': post[2],
+                    'post_date': post[3]
+                             }
+                posts_dict.append(post_dict)
+            return render_template('news.html', posts_dict=posts_dict)
+
     except Exception as e:
         return str(e)
-""""I failed on this place at 5:36
-        """
+
 
 @app.route("/music/", methods=["GET"])
 @login_required

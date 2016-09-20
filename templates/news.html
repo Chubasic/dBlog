@@ -1,86 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <title>Python Flask Bucket List App</title>
+{% extends "header.html" %}
 
-   
-    <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
+{% block body %}
 
-    <link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
-    <link href="../static/css/signup.css" rel="stylesheet">
-    <script src="../static/js/jquery-1.11.2.js"></script>
-    <script>
-  $(function(){
-    $.ajax({
-      url : "/news/",
-      type : 'GET',
-      success: function(res){
-        var div = $('<div>')
-    .attr('class', 'list-group')
-    .append($('<a>')
-        .attr('class', 'list-group-item active')
-        .append($('<h4>')
-            .attr('class', 'list-group-item-heading'),
-            $('<p>')
-            .attr('class', 'list-group-item-text')));
-                  
-        
-        
-        var postObj = JSON.parse(res);
-        var post = '';
-        
-        $.each(postObj,function(index, value){
-          post = $(div).clone();
-          $(post).find('h4').text(value.post_title);
-          $(post).find('p').text(value.post_text);
-          $('.jumbotron').append(post);
-        });
-      },
-      error: function(error){
-        console.log(error);
-      }
-    });
-  });
-    </script>
-    
-   
-  </head>
-
-  <body>
-
-    <div class="container">
-      <div class="header">
-        <nav>
-          <ul class="nav nav-pills pull-right">
-      <li role="presentation"><a href="/addpost">Add post</a></li>
-            <li role="presentation" class="active"><a href="/logout">Logout</a></li>
-          </ul>
-        </nav>
-        <h3 class="text-muted">Python Flask App</h3>
-      </div>
-
-      <div class="jumbotron">
-        
-
-  
-
-
-
-  
-
-
-
-
-
-       
-      </div>
-
-      
-
-      <footer class="footer">
-        <p>&copy; Company 2015</p>
-      </footer>
-
-    </div>
-  </body>
-</html>
+{% for post in posts_dict %}
+<div class="alert alert-info">
+    <strong><h2>{{ post.post_title }}</h2></strong>{{ post.post_date }}<br><br><strong>{{ post.post_text|safe }}</strong><br>
+</div>
+{% endfor %}
+{% endblock %}
