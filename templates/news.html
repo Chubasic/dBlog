@@ -1,13 +1,10 @@
 {% extends "header.html" %}
+
 {% block body %}
 
-
-<ul class="entries">{% for post in posts %}
-    <li>
-<h2>{{ post['title'] }}</h2>
-{{ post['post_text']|safe }}
-{% else %}</li>
-    <li><em>Unbelievable. No posts here so far!</em>
-{% endfor %}</li>
-</ul>
+{% for post in posts_dict %}
+<div class="alert alert-info">
+    <strong><h2>{{ post.post_title }}</h2></strong>{{ post.post_date }}<br><br><strong>{{ post.post_text|safe }}</strong><br>
+</div>
+{% endfor %}
 {% endblock %}
