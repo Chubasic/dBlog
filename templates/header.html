@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
   <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+  <link rel="stylesheet"  href="backgroud.css">
 </head>
 
 <header>
@@ -56,6 +57,8 @@
 
 </header>
 
+
+
 <body>
 
 <div class="border-row" style= "width:70%; margin-bottom: -15px;"></div>
@@ -74,9 +77,38 @@
   
   {% block body %}{% endblock %}
   </div>
-
-  <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+  <script src="../static/js/jquery-1.11.2.js"></script>
   <script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+      
+
+ <!-- <script src="../static/js/jquery.ui.widget.js"></script>
+ 
+  <script type="text/javascript" src="../static/js/jquery.fileupload.js"></script>
+ 
+  <script type="text/javascript" src="../static/js/jquery.fileupload-process.js"></script>
+ 
+  <script type="text/javascript" src="../static/js/jquery.fileupload-ui.js"></script>
+        <script>
+        $(function(){
+                $('#fileupload').fileupload({
+                    url: 'upload',
+                    dataType: 'json',
+                    add: function (e, data) {
+                        data.submit();
+                    },
+                    success:function(response,status) {
+                    console.log(response.filename);
+                    var filePath = 'static/uploads/' + response.filename;
+                    $('#imgUpload').attr('src',filePath);
+                    $('#filePath').val(filePath);
+                        console.log('success');
+                    },
+                    error:function(error){
+                        console.log(error);
+                    }
+                });
+        })
+        </script>-->
 </div>
 </body>
 

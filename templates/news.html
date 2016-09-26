@@ -5,6 +5,8 @@
 {% for post in posts_dict %}
 <div class="alert alert-info">
     <strong><h2>{{ post.post_title }}</h2></strong>{{ post.post_date }}<br><br><strong>{{ post.post_text|safe }}</strong><br>
+    <img class = "img-thumbnail" src="/static/uploads/{{post.post_filename}}">
+    
 </div>
 {% endfor %}
 {% endblock %}

@@ -1,23 +1,30 @@
 from flask import Flask, render_template, flash, request, url_for, redirect, session
-from wtforms import Form, BooleanField, TextField, PasswordField, validators, TextAreaField
+from wtforms import Form, BooleanField, TextField, PasswordField, validators, TextAreaField, FileField
 from wtforms.validators import DataRequired
 from passlib.hash import sha256_crypt
 from MySQLdb import escape_string as thwart
 import gc
-from content_m import Content
+from content_m import content
 from dbconnect import connection
 from functools import wraps
 import datetime
-import json
+import os
+from werkzeug.utils import secure_filename
+from flask_wtf.file import FileField, FileAllowed, FileRequired
 
 
+form = Form(csrf_enabled=False)
 
-DICT = Content()
+DICT = content()
+
 
 app = Flask(__name__)
+app.secret_key = 'why would I tell you my secret key?'
+
+app.config['UPLOAD_FOLDER'] = 'static/uploads'
 
 
-@app.route("/")
+@app.route('/')
 def hello():
     return render_template("main.html")
 
@@ -96,7 +103,8 @@ class RegistrationForm(Form):
     ])
     confirm = PasswordField('Repeat Password')
     accept_tos = BooleanField(
-        'I accept the <a href="/about/tos" target="blank">Terms of Service</a> and <a href="/about/privacy-policy" target="blank">Privacy Notice</a>',
+        'I accept the <a href="/about/tos" target="blank">Terms of Service</a> and <a href="/about/privacy-policy" '
+        'target="blank">Privacy Notice</a>',
         [validators.DataRequired()])
 
 
@@ -142,6 +150,7 @@ class ArticleForm(Form):
     post_title = TextField('post_title', validators=[DataRequired()])
     post_text = TextAreaField('post_text', validators=[DataRequired()])
 
+
 @app.route('/addpost/', methods=['POST', 'GET'])
 @login_required
 def add_post():
@@ -149,12 +158,14 @@ def add_post():
         form = ArticleForm(request.form)
         dt = datetime.date.today()
         post_date = dt.strftime("%d/%m/%y")
-        if request.method == "POST" and form.validate():
 
+        if request.method == "POST" and form.validate():
             if form.post_title.data and form.post_text.data:
                 c, conn = connection()
-                post = c.execute("INSERT INTO posts (post_title, post_text, post_date, post_username)" "values(%s, %s, %s, %s)",
-                (form.post_title.data, form.post_text.data, post_date, session.get('username')))
+                post = c.execute("INSERT INTO posts (post_title, post_text, post_date, post_filename, post_username)"
+                                 "values(%s, %s, %s, %s, %s)",
+                        (form.post_title.data, form.post_text.data, post_date,
+                         filename, session.get('username')))
                 conn.commit()
                 flash('New post is created.')
                 c.close()
@@ -174,13 +185,37 @@ def add_post():
         flash('You were not logged in. Please sign in first.')
 
 
+class PhotoForm(Form):
+    photo = FileField('Your photo')
+
+
+class UploadForm(Form):
+    upload = FileField('image', validators=[
+        FileRequired(),
+        FileAllowed(['jpg', 'png'], 'Images only!')
+    ])
+
+
+@app.route('/upload/', methods=('GET', 'POST'))
+def upload():
+    form = PhotoForm()
+    if form.validate_on_submit():
+        filename = secure_filename(form.photo.data.filename)
+        form.photo.data.save('uploads/' + filename)
+    else:
+        filename = None
+    return filename
+return render_template('addpost.html', form=form, filename=filename)
+
+
 @app.route('/news/', methods=["GET", "POST"])
 @login_required
 def news():
     try:
         if session.get('username'):
             c, conn = connection()
-            posts = c.execute("SELECT post_title, post_text, post_username, post_date FROM posts ORDER BY post_id DESC")
+            posts = c.execute("SELECT post_title, post_text, post_username, post_date, post_filename"
+                              " FROM posts ORDER BY post_id DESC")
             posts = c.fetchall()
             posts_dict = []
             for post in posts:
@@ -188,7 +223,8 @@ def news():
                     'post_title': post[0],
                     'post_text': post[1],
                     'post_username': post[2],
-                    'post_date': post[3]
+                    'post_date': post[3],
+                    'post_filename': post[4]
                              }
                 posts_dict.append(post_dict)
             return render_template('news.html', posts_dict=posts_dict)
@@ -201,7 +237,6 @@ def news():
 @login_required
 def music():
     return render_template("music.html")
-
 
 if __name__ == "__main__":
     app.run(debug=True)
