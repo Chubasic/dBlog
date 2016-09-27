@@ -28,17 +28,25 @@
 
   <ul class="nav navbar-nav navbar-right">
       
-      <div style="margin-right: 10px;" class="container-fluid">
-       <h5>
+    <div style="margin-right: 10px;"  class="container-fluid">
+    <h5>
+      {% if session.logged_in %}
+       <a href="/support-donate/"> <span class="glyphicon glyphicon-btc"></span> Support  </a>
+  
+       <a  href="/logout/"><span class="glyphicon glyphicon-log-in"></span> Logout   </a>
+
+       <a href="/addpost/"> <span class="glyphicon glyphicon-list"></span> Add new  </a>
+      {% else %} 
+
       <a href="/support-donate/"> <span class="glyphicon glyphicon-btc"></span> Support  </a>
   
-      <a href="/login/"><span class="glyphicon glyphicon-log-in"></span> Login   </a>
+      <a  href="/login/"><span class="glyphicon glyphicon-log-in"></span> Login   </a>
 
-     
-
-    <a href="/register/"><span class="glyphicon glyphicon-pencil"></span> Sign up</a></h5>
-
-      </div>
+      <a href="/register/"><span class="glyphicon glyphicon-pencil"></span> Sign up</a>
+      {% endif %}
+    </h5>
+    
+    </div>
       </ul>
   </ul>
   </div>
@@ -49,7 +57,7 @@
 
 <div class="container" align="center" style="height:80%">
 <a href="/dashboard/">
-    <video autoplay="autoplay" muted="muted" poster="/static/videos/small.png" style="width:50%; max-height:30%;">
+    <video autoplay="autoplay" muted="muted" poster="/static/videos/small.jpg" style="width:50%; max-height:30%;">
     <source src="/static/videos/444.mp4" type="video/mp4" type="video/mp4">
     <source src="/static/videos/444.ogv" type="video/ogv">
     </video>

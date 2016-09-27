@@ -1,5 +1,5 @@
 from flask import Flask, render_template, flash, request, url_for, redirect, session
-from wtforms import Form, BooleanField, TextField, PasswordField, validators, TextAreaField, FileField
+from wtforms import Form, BooleanField, TextField, PasswordField, validators, TextAreaField
 from wtforms.validators import DataRequired
 from passlib.hash import sha256_crypt
 from MySQLdb import escape_string as thwart
@@ -8,20 +8,13 @@ from content_m import content
 from dbconnect import connection
 from functools import wraps
 import datetime
-import os
-from werkzeug.utils import secure_filename
-from flask_wtf.file import FileField, FileAllowed, FileRequired
-
-
-form = Form(csrf_enabled=False)
+from uploader import upload
 
 DICT = content()
 
 
 app = Flask(__name__)
 app.secret_key = 'why would I tell you my secret key?'
-
-app.config['UPLOAD_FOLDER'] = 'static/uploads'
 
 
 @app.route('/')
@@ -104,8 +97,7 @@ class RegistrationForm(Form):
     confirm = PasswordField('Repeat Password')
     accept_tos = BooleanField(
         'I accept the <a href="/about/tos" target="blank">Terms of Service</a> and <a href="/about/privacy-policy" '
-        'target="blank">Privacy Notice</a>',
-        [validators.DataRequired()])
+        'target="blank">Privacy Notice</a>', [validators.DataRequired()])
 
 
 # register form
@@ -158,14 +150,12 @@ def add_post():
         form = ArticleForm(request.form)
         dt = datetime.date.today()
         post_date = dt.strftime("%d/%m/%y")
-
         if request.method == "POST" and form.validate():
             if form.post_title.data and form.post_text.data:
                 c, conn = connection()
-                post = c.execute("INSERT INTO posts (post_title, post_text, post_date, post_filename, post_username)"
-                                 "values(%s, %s, %s, %s, %s)",
-                        (form.post_title.data, form.post_text.data, post_date,
-                         filename, session.get('username')))
+                post = c.execute("INSERT INTO posts (post_title, post_text, post_date, post_username)"
+                                 "values(%s, %s, %s, %s)",
+                                 (form.post_title.data, form.post_text.data, post_date, session.get('username')))
                 conn.commit()
                 flash('New post is created.')
                 c.close()
@@ -181,31 +171,8 @@ def add_post():
         return render_template("addpost.html", form=form)
 
     except Exception as e:
-        return str(e)
         flash('You were not logged in. Please sign in first.')
-
-
-class PhotoForm(Form):
-    photo = FileField('Your photo')
-
-
-class UploadForm(Form):
-    upload = FileField('image', validators=[
-        FileRequired(),
-        FileAllowed(['jpg', 'png'], 'Images only!')
-    ])
-
-
-@app.route('/upload/', methods=('GET', 'POST'))
-def upload():
-    form = PhotoForm()
-    if form.validate_on_submit():
-        filename = secure_filename(form.photo.data.filename)
-        form.photo.data.save('uploads/' + filename)
-    else:
-        filename = None
-    return filename
-return render_template('addpost.html', form=form, filename=filename)
+        return str(e)
 
 
 @app.route('/news/', methods=["GET", "POST"])
