@@ -1,71 +1,30 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>44EndWay</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
-  <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
-</head>
+{% extends "header.html" %}
 
-<header>
-  <div class="navbar-header">
-      <a class="navbar-brand" href="/">
-    <img style="max-width:120px; margin-top: -12px; margin-left: -15px" src="{{ url_for('static', filename='images/mainlogo.jpg') }}">
-    </a>
-    </div>
-  
-  
-<div style="margin-bottom: -70px; ;" class="btn-group">
-  <button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    Explore <span class="caret"></span>
-  </button>
-  <ul class="dropdown-menu">
-    <li><a href="/dashboard/">Info</a></li>
-    <li><a href="/music/">Music</a></li>
-    <li><a href="/news/">News</a></li>
-  </ul>
-</div>
-  
-  
-  <ul class="nav navbar-nav navbar-right">
-      
-      <div style="margin-right: 10px;" class="container-fluid">
-      <h5>
-
-      <a href="/support-donate/"> <span class="glyphicon glyphicon-btc"></span> Support  </a>
-  
-      <a  href="/login/"><span class="glyphicon glyphicon-log-in"></span> Login   </a>
-
-      
-
-    <a href="/register/"><span class="glyphicon glyphicon-pencil"></span> Sign up</a></h5>
-    
-    </div>
-      </ul>
-  </ul>
-  </div>
-
-
-  <body>
+{% block body %}
+<body>
 
 
 <div class="container" align="center" style="margin-top: 35px;">
-<a href="/music/">
-    <audio controls="controls" autoplay="autoplay"> 
-    <source src="/static/music/65daysofstatic - Borealis-Contrastellar.mp3" type="audio/mp3" type="audio/mp3">
-    <source src="/static/music/65daysofstatic - Red Parallax.mp3" type="audio/mp3" type="audio/mp3">
-    <source src="/static/music/65daysofstatic - Supermoon.mp3" type="audio/mp3" type="audio/mp3">
-    </audio>
-    </a>
 
+    <audio controls="controls" autoplay="autoplay"></audio>
+    <ul>
+      {% for song in songs %}
+        <li><a href="javascript:void(0);" onclick="playSong('{{song}}')"></a>{{song}}</li>
+      {% endfor %}
+    </ul> 
+    
+
+  <script type="text/javascript">
+    function playSong(song) {
+      $('audio').attr('src', 'static/uploads/'+song);
+    }
+  </script>
   <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
   <script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
 </div> 
 </body>
 
-</html>
-
+{% endblock %}
 
 
 

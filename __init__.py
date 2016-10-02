@@ -1,5 +1,5 @@
 from flask import Flask, render_template, flash, request, url_for, redirect, session
-from wtforms import Form, BooleanField, TextField, PasswordField, validators, TextAreaField
+from wtforms import Form, BooleanField, TextField, PasswordField, validators, TextAreaField, FileField
 from wtforms.validators import DataRequired
 from passlib.hash import sha256_crypt
 from MySQLdb import escape_string as thwart
@@ -8,13 +8,20 @@ from content_m import content
 from dbconnect import connection
 from functools import wraps
 import datetime
-from uploader import upload
+import os
+import glob
+from werkzeug.utils import secure_filename
 
 DICT = content()
 
 
+UPLOAD_FOLDER = 'static/uploads'
+ALLOWED_EXTENSIONS = (['mp3', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
+separator = (['mp3'])
+
 app = Flask(__name__)
 app.secret_key = 'why would I tell you my secret key?'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
 @app.route('/')
@@ -45,7 +52,7 @@ def login_required(f):
 
     return wrap
 
-
+#logout
 @app.route("/logout/")
 @login_required
 def logout():
@@ -54,7 +61,7 @@ def logout():
     gc.collect()
     return redirect(url_for('dashboard'))
 
-
+#login
 @app.route('/login/', methods=["GET", "POST"])
 def login_page():
     error = ''
@@ -86,7 +93,7 @@ def login_page():
         error = "Invalid credentials, try again."
         return render_template("login.html", error=error)
 
-
+#WTForms class
 class RegistrationForm(Form):
     username = TextField('Username', [validators.Length(min=4, max=20)])
     email = TextField('Email Address', [validators.Length(min=6, max=50)])
@@ -100,7 +107,7 @@ class RegistrationForm(Form):
         'target="blank">Privacy Notice</a>', [validators.DataRequired()])
 
 
-# register form
+# Registration form
 @app.route('/register/', methods=["GET", "POST"])
 def register_page():
     try:
@@ -138,9 +145,35 @@ def register_page():
         return str(e)
 
 
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
+
+
+@app.route('/upload', methods=['GET', 'POST'])
+def upload_file():
+
+        if request.method == 'POST':
+            if 'file' not in request.files:
+                flash('No file part')
+                return redirect(request.url)
+            file = request.files['file']
+        # if user does not select file, browser also
+        # submit a empty part without filename
+            if file.filename == '':
+                flash('No selected file')
+                return redirect(request.url)
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                return redirect(url_for('add_post'))
+        return render_template('addpost.html')
+
+
 class ArticleForm(Form):
     post_title = TextField('post_title', validators=[DataRequired()])
     post_text = TextAreaField('post_text', validators=[DataRequired()])
+    post_filename = FileField('post_filename', validators=[DataRequired()])
 
 
 @app.route('/addpost/', methods=['POST', 'GET'])
@@ -150,12 +183,15 @@ def add_post():
         form = ArticleForm(request.form)
         dt = datetime.date.today()
         post_date = dt.strftime("%d/%m/%y")
+
         if request.method == "POST" and form.validate():
-            if form.post_title.data and form.post_text.data:
+
+            if form.post_title.data and form.post_text.data and form.post_filename.data:
                 c, conn = connection()
-                post = c.execute("INSERT INTO posts (post_title, post_text, post_date, post_username)"
-                                 "values(%s, %s, %s, %s)",
-                                 (form.post_title.data, form.post_text.data, post_date, session.get('username')))
+                post = c.execute("INSERT INTO posts (post_title, post_text, post_date, post_filename, post_username)"
+                                 "values(%s, %s, %s, %s, %s)",
+                                 (form.post_title.data, form.post_text.data, post_date, form.post_filename.data,
+                                  session.get('username')))
                 conn.commit()
                 flash('New post is created.')
                 c.close()
@@ -203,7 +239,8 @@ def news():
 @app.route("/music/", methods=["GET"])
 @login_required
 def music():
-    return render_template("music.html")
+    songs = [os.path.basename(music) for music in glob.glob('static/uploads/*.mp3')]
+    return render_template("music.html", songs=songs)
 
 if __name__ == "__main__":
     app.run(debug=True)
