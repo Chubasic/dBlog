@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <title>44EndWay</title>
@@ -7,59 +8,59 @@
   <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
   <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet" type="text/css">
   <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
-<style>
-
-video#bgvid{
-  min-width:100%;
-  max-height:100%;
-  width:auto;
-  height:auto;
-  background: url(small.jpg) no-repeat top center; /* replace **image link** with your own file*/
-  background-size:cover;
-   -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-}
-
-</style>
+  <style>
+    video#bgvid {
+      min-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+      background: url(small.jpg) no-repeat top center;
+      /* replace **image link** with your own file*/
+      background-size: cover;
+      -webkit-background-size: cover;
+      -moz-background-size: cover;
+      -o-background-size: cover;
+    }
+  </style>
 
 </head>
 
-<header>
+<header class="main-header">
 
-<div style="margin-bottom: -25px; margin-left: 3px;" class="btn-group">
-  <button type="button" class="btn btn-warning btn-lg dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    Explore <span class="caret"></span>
-  </button>
-  <ul class="dropdown-menu">
-    <li><a href="/dashboard/">Info</a></li>
-    <li><a href="/music/">Music</a></li>
-    <li><a href="/news/">News</a></li>
-  </ul>
-</div>
+  <div style="margin-bottom: -25px; margin-left: 3px;" class="btn-group">
+    <button type="button" class="btn btn-warning btn-lg dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+      aria-expanded="false">
+      Explore <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu">
+      <li><a href="/dashboard/">Info</a></li>
+      <li><a href="/music/">Music</a></li>
+      <li><a href="/news/">News</a></li>
+    </ul>
+  </div>
 
   <ul class="nav navbar-nav navbar-right navbar-inverse">
-      
-    <div style="margin-right: 15px;"  class="container-fluid">
-    <h5>
-      {% if session.logged_in %}
-       <a href="/support-donate/"> <span class="glyphicon glyphicon-btc"></span> Support  </a>
-  
-       <a  href="/logout/"><span class="glyphicon glyphicon-log-in"></span> Logout   </a>
 
-       <a href="/addpost/"> <span class="glyphicon glyphicon-list"></span> Add new  </a>
-      {% else %} 
+    <div style="margin-right: 15px;" class="container-fluid">
+      <h5>
+        {% if session.logged_in %}
+        <a href="/support-donate/"> <span class="glyphicon glyphicon-btc"></span> Support </a>
 
-      <a href="/support-donate/"> <span class="glyphicon glyphicon-btc"></span> Support  </a>
-  
-      <a  href="/login/"><span class="glyphicon glyphicon-log-in"></span> Login   </a>
+        <a href="/logout/"><span class="glyphicon glyphicon-log-in"></span> Logout </a>
 
-      <a href="/register/"><span class="glyphicon glyphicon-pencil"></span> Sign up</a>
-      {% endif %}
-    </h5>
-    
+        <a href="/addpost/"> <span class="glyphicon glyphicon-list"></span> Add new </a>
+        {% else %}
+
+        <a href="/support-donate/"> <span class="glyphicon glyphicon-btc"></span> Support </a>
+
+        <a href="/login/"><span class="glyphicon glyphicon-log-in"></span> Login </a>
+
+        <a href="/register/"><span class="glyphicon glyphicon-pencil"></span> Sign up</a>
+        {% endif %}
+      </h5>
+
     </div>
-      </ul>
+  </ul>
   </ul>
   </div>
 
@@ -67,17 +68,17 @@ video#bgvid{
 
 <body>
 
-<div class="is_overlay" align="center" id="trailer" >
-<a href="/dashboard/">
-    <video autoplay="autoplay" muted="muted" loop="loop" id="bgvid" poster="/static/small.jpg">
-    <source src="/static/videos/444.mp4" type="video/mp4" type="video/mp4">
-    <source src="/static/videos/444.ogv" type="video/ogv">
-    </video>
+  <div class="is_overlay" align="center" id="trailer">
+    <a href="/dashboard/">
+      <video autoplay="autoplay" muted="muted" loop="loop" id="bgvid" poster="/static/small.jpg">
+        <source src="/static/video/444.mp4" type="video/mp4" type="video/mp4">
+        <source src="/static/video/444.ogv" type="video/ogv">
+      </video>
     </a>
 
-  <script src="../static/js/jquery-1.11.2.js"></script>
-  <script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
-</div> 
+    <script src="../static/js/jquery-1.11.2.js"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+  </div>
 </body>
 
 </html>
