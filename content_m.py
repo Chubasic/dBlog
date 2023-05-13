@@ -1,3 +1,3 @@
-def content():
-    DICT = {"CONTACT": [["Facebook", "https://www.facebook.com/ShanovniPan"], ["VK", "https://vk.com/id332112141"]]}
+def contact_info_content():
+    DICT = {"CONTACT": [["Have no", "Social media accounts :)"]]}
     return DICT
