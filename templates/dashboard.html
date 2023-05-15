@@ -18,7 +18,7 @@
   <div role="tabpanel" class="tab-pane fade" id="CONTACT" style="color:#ffffff">
   <ul>
   	<li>Number: 380xxxxxxxx</li>
-  	<li>Email: example@gmail.com</li>
+  	<li>Email: {{ email }}</li>
   	{% for t in CONTACT_INFO["CONTACT"] %}
   		<li><a href="{{t[1]}}">{{t[0]}}</a></li>
   	{% endfor %}	
