@@ -2,19 +2,22 @@
 
 {% block body %}
 
-{% for post in posts_dict %}
+{% for post in posts_list %}
 <div class="alert alert-warning">
-    <strong><h2>{{ post.post_title }}</h2></strong>{{ post.post_date }}<br><br><strong>{{ post.post_text|safe }}</strong><br>
+    <strong><h2>{{ post.post_title }}</h2></strong>{{ post.post_date }}<br><br><strong>{{ post.post_text|safe
+    }}</strong><br>
     {% if post.post_filename %}
-    	{% if not post.post_filename.endswith("mp3") %}
-    		<img class = "img-thumbnail" src="/static/uploads/{{post.post_filename}}">
-    	{% else %}
-		<div class="img-thumbnail"><p2>{{ post.post_filename.replace('_', ' ').replace('  ',' & ') }}</p2><br><br>
-  			<audio controls="controls">
-			<source src="/static/uploads/{{post.post_filename}}" type="audio/mp3">
-		</div>
-		{% endif %}
-	{% endif %}
+    {% if not post.post_filename.endswith("mp3") %}
+    <img class="img-thumbnail" src="/static/uploads/{{post.post_filename}}">
+    {% else %}
+    <div class="img-thumbnail">
+        <p2>{{ post.post_filename.replace('_', ' ').replace(' ',' & ') }}</p2>
+        <br><br>
+        <audio controls="controls">
+            <source src="/static/uploads/{{post.post_filename}}" type="audio/mp3"></audio>
+    </div>
+    {% endif %}
+    {% endif %}
 </div>
 {% endfor %}
 {% endblock %}

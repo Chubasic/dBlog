@@ -1,3 +1,2 @@
 def contact_info_content():
-    DICT = {"CONTACT": [["Have no", "Social media accounts :)"]]}
-    return DICT
+    return {"CONTACT": [["Have no social media accounts :)", "_blank"]]}

@@ -25,6 +25,6 @@ class RegistrationForm(Form):
 
 
 class CreatePostForm(Form):
-    post_title = StringField('post_title', validators=[DataRequired()])
-    post_text = TextAreaField('post_text', validators=[DataRequired()])
-    post_filename = FileField('post_filename', validators=[DataRequired()])
+    post_title = StringField('Title', validators=[DataRequired()])
+    post_text = TextAreaField('Text', validators=[DataRequired()])
+    post_filename = FileField('File', validators=[DataRequired()])

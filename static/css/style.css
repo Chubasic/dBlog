@@ -9,6 +9,6 @@ header.main-header {
   width: 100%;
 }
 
-a, span, label {
+a, span, label, p {
     color: white;
 }
