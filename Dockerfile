@@ -21,7 +21,7 @@ ENV FLASK_ENV=development
 EXPOSE 5000
 
 # Run the Flask app
-CMD ["flask", "run", "--host=0.0.0.0", "--debug"]
+CMD ["flask", "run", "--host=0.0.0.0"]
 
 # End of Flask-specific setup
 
