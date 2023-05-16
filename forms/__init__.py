@@ -1,6 +1,12 @@
 # WTForms
+import os
+
+from werkzeug.utils import secure_filename
 from wtforms import Form, BooleanField, PasswordField, validators, TextAreaField, FileField, StringField
 from wtforms.validators import DataRequired
+
+from app import ALLOWED_EXTENSIONS, UPLOAD_FOLDER
+
 """
     Registration form
 """
@@ -14,9 +20,6 @@ class RegistrationForm(Form):
         validators.EqualTo('confirm', message='Passwords must match')
     ])
     confirm = PasswordField('Repeat Password')
-    accept_tos = BooleanField(
-        'I accept the <a href="/about/tos" target="blank"> Terms of Service </a> and <a href="/about/privacy-policy" '
-        'target="blank">Privacy Notice</a>', [validators.DataRequired()])
 
 
 """
@@ -24,7 +27,23 @@ class RegistrationForm(Form):
 """
 
 
-class CreatePostForm(Form):
+class PostForm(Form):
     post_title = StringField('Title', validators=[DataRequired()])
     post_text = TextAreaField('Text', validators=[DataRequired()])
-    post_filename = FileField('File', validators=[DataRequired()])
+    post_filename = FileField('File', validators=[])
+
+    def validate_image(self, field):
+        filename = field.data
+        return '.' in filename and \
+               filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
+
+    def upload(self, request):
+        if request.files.get('post_filename'):
+            file = request.files.get('post_filename')
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(UPLOAD_FOLDER, filename))
+            self.post_filename.data = file.filename
+        # if self.post_filename.data:
+        #     self.post_filename.data = request.files.get('post_filename').filename
+        #     image_data = request.files[self.post_filename.name].read()
+        #     open(os.path.join(upload_path, self.post_filename.data), 'w').write(image_data)

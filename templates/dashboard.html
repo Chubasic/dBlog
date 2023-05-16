@@ -4,28 +4,45 @@
 
 <div>
 
-  <!-- Nav tabs -->
-  <ul class="nav nav-tabs" role="tablist">
-    <li role="presentation" class="active"><a href="#ABOUT" aria-controls="ABOUT" role="tab" data-toggle="tab">ABOUT</a></li>
-    <li role="presentation"><a href="#CONTACT" aria-controls="CONTACT" role="tab" data-toggle="tab">CONTACT</a></li>
-  </ul>
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="active" role="presentation"><a aria-controls="todo" data-toggle="tab" href="#todo"
+                                                  role="tab">Todo</a></li>
+        <li role="presentation"><a aria-controls="userinfo" data-toggle="tab" href="#userinfo" role="tab">User info</a></li>
+        <li role="presentation"><a aria-controls="legacy" data-toggle="tab" href="#legacy" role="tab">Legacy</a></li>
+    </ul>
 
-  <!-- Tab panes -->
-<div class="tab-content">
-  <div role="tabpanel" class="tab-pane fade in active" id="ABOUT" style="color:#ffffff">If you have ever wondered where to start when it comes to programming, this website will answer all of your questions. You are never too old or too young to start programming and it is not as hard as you think. Computer Programming is a subject that people are generally afraid of, the idea of typing in codes line after line sounds both boring and confusing, but the ability to create software is really fun and will give you a whole new view on how computers work. And hey, imagine going to a job interview and saying that you enjoy Computer Programming in your spare time! Being able to develop software is a skill that comes with great benefits and a skill that is actually not hard to learn. This website will provide you with free tutorials and resources that will teach you all of the skills that you need to know in order to be able to develop your own applications.
-  There are thousands of websites on the internet that claim to help you start programming</div>
+    <!-- Tab panes -->
+    <div class="tab-content">
+        <div class="tab-pane fade in active" id="todo" role="tabpanel" style="color:#ffffff">
+            <h3>WIP</h3>
+        </div>
+        <div class="tab-pane fade" id="userinfo" role="tabpanel" style="color:#ffffff">
+            <ul>
+                <li>Username: {{ username }}</li>
+                <li>Email: {{ email }}</li>
+                {% for t in CONTACT_INFO["CONTACT"] %}
+                <li><a href="{{t[1]}}">{{t[0]}}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="tab-pane fade in active" id="legacy" role="tabpanel" style="color:#ffffff">
+            <p>If you have ever wondered</p><span>
+            where to start when it comes to programming, this website will answer all of your questions. You are never
+            too old or too young to start programming and it is not as hard as you think. Computer Programming is a
+            subject that people are generally afraid of, the idea of typing in codes line after line sounds both boring
+            and confusing, but the ability to create software is really fun and will give you a whole new view on how
+            computers work. And hey, imagine going to a job interview and saying that you enjoy Computer Programming in
+            your spare time! Being able to develop software is a skill that comes with great benefits and a skill that
+            is actually not hard to learn. This website will provide you with free tutorials and resources that will
+            teach you all of the skills that you need to know in order to be able to develop your own applications.
+            There are thousands of websites on the internet that claim to help you start programming
+        </span>
+        </div>
 
-  <div role="tabpanel" class="tab-pane fade" id="CONTACT" style="color:#ffffff">
-  <ul>
-  	<li>Number: 380xxxxxxxx</li>
-  	<li>Email: {{ email }}</li>
-  	{% for t in CONTACT_INFO["CONTACT"] %}
-  		<li><a href="{{t[1]}}">{{t[0]}}</a></li>
-  	{% endfor %}	
-  </ul>
-  </div>
-  
-</div>
+
+
+    </div>
 
 </div>
 
