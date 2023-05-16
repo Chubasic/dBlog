@@ -5,11 +5,9 @@ from functools import wraps
 
 from flask import render_template, flash, request, url_for, redirect, session
 from passlib.hash import sha256_crypt
-from werkzeug.utils import secure_filename
-
-from app import app, ALLOWED_EXTENSIONS, db
+from app import app, db
 from content_m import contact_info_content
-from forms import RegistrationForm, CreatePostForm
+from forms import RegistrationForm, PostForm
 from models.posts import Post
 from models.users import User
 
@@ -23,8 +21,9 @@ def hello():
 
 @app.route("/dashboard/")
 def dashboard():
-    return render_template("dashboard.html", CONTACT_INFO=CONTACT_INFO, email=session.get('email', 'Something went '
-                                                                                                   'wrong'))
+    default: str = "No data"
+    return render_template("dashboard.html", CONTACT_INFO=CONTACT_INFO, email=session.get('email', default),
+                           username=session.get("nickname", default))
 
 
 @app.errorhandler(404)
@@ -100,9 +99,9 @@ def register_page():
         if request.method == "POST" and form.validate():
             nickname: str = form.username.data
             email: str = form.email.data
-            password = sha256_crypt.hash(form.password.data)
+            password: str = sha256_crypt.hash(form.password.data)
             res = User.exists(email=email)
-            app.logger.info("User exists?::>", res)
+            app.logger.info(f"User exists?::> ${res}", )
             if res:
                 flash("You already have account, login with your password.")
                 return render_template('register.html', form=form)
@@ -126,37 +125,14 @@ def register_page():
         return render_template("error.html", error=e)
 
 
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
-
-
-@app.route('/upload', methods=['GET', 'POST'])
-def upload_file():
-    if request.method == 'POST':
-        if 'file' not in request.files:
-            flash('No file part')
-            return redirect(request.url)
-        file = request.files['file']
-        # if user does not select file, browser also
-        # submit an empty part without filename
-        if file.filename == '':
-            flash('No selected file')
-            return redirect(request.url)
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return redirect(url_for('add_post'))
-    return render_template('add-post.html')
-
-
 @app.route('/add-post/', methods=['POST', 'GET'])
 @login_required
 def add_post():
+    form = PostForm(request.form)
     try:
-        form = CreatePostForm(request.form)
+        form.upload(request)
         if request.method == "POST" and form.validate():
-            if form.post_title.data and form.post_text.data and form.post_filename.data:
+            if form.post_title.data and form.post_text.data:
                 dt = datetime.date.today()
                 post_date = dt.strftime("%d/%m/%y")
                 post = Post({
@@ -166,7 +142,7 @@ def add_post():
                     'post_filename': form.post_filename.data,
                     'post_username': session.get('nickname', "Anonymous")
                 })
-                app.logger.debug({
+                app.logger.info({
                     'post_title': form.post_title.data,
                     'post_text': form.post_text.data,
                     'post_date': post_date,
@@ -181,11 +157,10 @@ def add_post():
             else:
                 flash('Bad request.')
                 return render_template('add-post.html', username=session.get('nickname', "Unknown"), form=form)
-        return render_template("add-post.html", form=form)
-
     except Exception as e:
         flash('Nope, not working ;)')
         return render_template("error.html", error=e)
+    return render_template("add-post.html", form=form)
 
 
 @app.route('/news/', methods=["GET", "POST"])
@@ -194,7 +169,6 @@ def news():
     try:
         posts_list = []
         posts = db.session.query(Post).all()
-        app.logger.debug(posts)
         for post in posts:
             post_dict = {
                 'post_title': post.post_title,

@@ -22,6 +22,7 @@
       -o-background-size: cover;
     }
 
+
     </style>
 
 </head>
@@ -29,7 +30,8 @@
 <header class="main-header">
 
     <div class="btn-group" style="margin-bottom: -25px; margin-left: 3px;">
-        <button aria-expanded="false" aria-haspopup="true" class="btn btn-warning btn-lg dropdown-toggle" data-toggle="dropdown"
+        <button aria-expanded="false" aria-haspopup="true" class="btn btn-warning btn-lg dropdown-toggle"
+                data-toggle="dropdown"
                 type="button">
             Explore <span class="caret"></span>
         </button>
@@ -39,29 +41,25 @@
         </ul>
     </div>
 
-    <ul class="nav navbar-nav navbar-right navbar-inverse">
+    <div class="container-fluid" style="margin-right: 15px;">
+        <ul class="nav navbar-nav navbar-right navbar-inverse">
 
-        <div class="container-fluid" style="margin-right: 15px;">
-            <h5>
-                {% if session.logged_in %}
-                <a href="/support-donate/"> <span class="glyphicon glyphicon-btc"></span> Support </a>
+            {% if session.logged_in %}
+            <li><a href="/support-donate/"> <span class="glyphicon glyphicon-btc"></span> Support </a></li>
 
-                <a href="/logout/"><span class="glyphicon glyphicon-log-in"></span> Logout </a>
+            <li><a href="/logout/"><span class="glyphicon glyphicon-log-in"></span> Logout </a></li>
 
-                <a href="/add-post/"> <span class="glyphicon glyphicon-list"></span> Add new </a>
-                {% else %}
+            <li><a href="/add-post/"> <span class="glyphicon glyphicon-list"></span> Add new </a></li>
+            {% else %}
 
-                <a href="/support-donate/"> <span class="glyphicon glyphicon-btc"></span> Support </a>
+            <li><a href="/support-donate/"> <span class="glyphicon glyphicon-btc"></span> Support </a></li>
 
-                <a href="/login/"><span class="glyphicon glyphicon-log-in"></span> Login </a>
+            <li><a href="/login/"><span class="glyphicon glyphicon-log-in"></span> Login </a></li>
 
-                <a href="/register/"><span class="glyphicon glyphicon-pencil"></span> Sign up</a>
-                {% endif %}
-            </h5>
+            <li><a href="/register/"><span class="glyphicon glyphicon-pencil"></span> Sign up</a></li>
+            {% endif %}
 
-        </div>
-    </ul>
-    </ul>
+        </ul>
     </div>
 
 </header>
